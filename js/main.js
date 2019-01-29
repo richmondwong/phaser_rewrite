@@ -17,7 +17,8 @@ preload: function(){
   this.load.image('tileset','assets/tileset.png');
   this.game.load.image('bullet', 'assets/bullet.png')
   this.game.load.image('bullet2', 'assets/bullet.png')
-  this.load.spritesheet('player','assets/player.png',24,26)
+  // this.load.spritesheet('player','assets/player.png',24,26)
+  this.load.spritesheet('player','assets/dino_red.png',24,24)
   this.load.spritesheet('test','assets/dino_green.png', 24, 24)
   this.game.load.image('health_green', 'assets/health_green.png')
   this.game.load.image('health_red', 'assets/health_red.png')
@@ -87,9 +88,12 @@ create: function(){
   sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S)
   wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W)
 
+
   // spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
   fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
   fireButton2 = this.input.keyboard.addKey(Phaser.KeyCode.TILDE);
+  meleeButton = this.game.input.keyboard.addKey(Phaser.Keyboard.P)
+  meleeButton2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Q)
 
 },
 
@@ -139,6 +143,9 @@ update: function(){
    }
    if (fireButton.isDown){
     bullet.fire()
+   }
+   if (meleeButton.isDown){
+
    }
 
 
