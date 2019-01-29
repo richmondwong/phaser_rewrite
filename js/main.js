@@ -3,7 +3,7 @@ var layer;
 var player;
 var player2;
 var cursors;
-
+var currentHealthStatus;
 
 var PlayState = {
 
@@ -18,7 +18,9 @@ preload: function(){
   this.game.load.image('bullet', 'assets/bullet.png')
   this.game.load.image('bullet2', 'assets/bullet.png')
   this.load.spritesheet('player','assets/player.png',24,26)
-  this.load.spritesheet('test','assets/test.png', 24,26)
+  this.load.spritesheet('test','assets/dino_green.png', 24, 24)
+  this.game.load.image('health_green', 'assets/health_green.png')
+  this.game.load.image('health_red', 'assets/health_red.png')
 },
 
 create: function(){
@@ -38,15 +40,19 @@ create: function(){
   bullet2 = this.game.add.weapon(10, 'bullet')
 
 
-  player = this.add.sprite(600,560,'player', 9);//position of the player
+  player = this.add.sprite(550,480,'player', 9);//position of the player
   player.anchor.setTo(0.5,0.5);
+  player.scale.setTo(3,3)
   player.animations.add('walking', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 9, false);
   player.health = 100
+  player.maxhealth = 100
 
   player2 = this.add.sprite(300,560,'test', 3);//position of the player
   player2.anchor.setTo(0.5,0.5);
-  player2.animations.add('walking2', [0, 1, 2], 3, false);
+  player2.scale.setTo(4,4)
+  player2.animations.add('walking2', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 24, false);
   player2.health = 100
+  player2.maxhealth = 100
 
 
   this.physics.enable(player, Phaser.Physics.ARCADE)
@@ -64,6 +70,15 @@ create: function(){
   // bullet.fireLimit = 10
   bullet2.trackSprite(player2);
   bullet2.bulletSpeed = 500
+
+  var totalHealthBar = this.game.add.image(300, 20, 'health_red')
+  totalHealthBar.fixedToCamera = true
+  currentHealthStatus = this.game.add.image(300, 20, 'health_green')
+  currentHealthStatus.fixedToCamera = true
+  var healthText = this.game.add.text(210, 20, 'P2 Health', {fontSize: '20px', fill: '#ffffff'})
+  healthText.fixedToCamera = true
+
+
 
 
   cursors = this.input.keyboard.createCursorKeys()
@@ -91,6 +106,7 @@ update: function(){
 
   player2.body.velocity.x = 0;
   player2.body.velocity.y = 0;
+
 
 
   if (cursors.left.isDown){
@@ -159,9 +175,10 @@ handleCollisions: function(){
 },
 
 playerHit: function(enemyPlayer, bullet){
-  // bullet.kill()
+  bullet.kill()
   // enemyPlayer.kill()
-  enemyPlayer.damage(1)
+  enemyPlayer.damage(5)
+  currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
   console.log(enemyPlayer.health)
 
   // if (enemyPlayer.health === 0){
@@ -173,8 +190,10 @@ playerHit: function(enemyPlayer, bullet){
 },
 
 playerHit2: function(enemyPlayer2, bullet){
-  // bullet.kill()
-  // enemyPlayer2.kill()
+  bullet.kill()
+  // enemyPlayer.kill()
+  enemyPlayer2.damage(5)
+  console.log(enemyPlayer2.health)
 }
 
 
