@@ -68,6 +68,7 @@ preload: function(){
   this.game.load.image('bullet2', 'assets/bullet.png')
   // this.load.spritesheet('player','assets/player.png',24,26)
   this.load.spritesheet('player','assets/dino_red.png',24,24)
+  // this.load.spritesheet('player','assets/dino_red_flipped.png',24,24)
   this.load.spritesheet('test','assets/dino_green.png', 24, 24)
   this.game.load.image('health_green', 'assets/health_green.png')
   this.game.load.image('health_red', 'assets/health_red.png')
@@ -77,6 +78,18 @@ preload: function(){
 },
 
 create: function(){
+
+  //total time until trigger
+        // this.timeInSeconds = 100;
+        //make a text field
+        this.timeText = this.add.text(640, 25, "0:00");
+        //turn the text white
+        this.timeText.fill = "#ffffff";
+        //center the text
+        this.timeText.anchor.set(0.5, 0.5);
+        //set up a loop timer
+        this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.tick, this);
+
 
   groupPlatform = this.game.add.group()
 
@@ -202,8 +215,9 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   player.anchor.setTo(0.5,0.5);
   player.scale.setTo(4,4)
   player.animations.add('walking', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 9, true);
-  player.animations.add('attack', [17,18,19,20,21,22,23, 0],7,true)
+  // player.animations.add('attack', [17,18,19,20,21,22,23, 0],7,true)
   player.animations.add('attack', [17, 0],7,false)
+  player.animations.add('death', [15, 14, 16, 15],4,false)
   player.health = 100
   player.maxhealth = 100
 
@@ -211,7 +225,8 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   player2.anchor.setTo(0.5,0.5);
   player2.scale.setTo(4,4)
   player2.animations.add('walking2', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 24, false);
-  player2.animations.add('attack2', [17,18,19,20,21,22,23, 0],7,false)
+  // player2.animations.add('attack2', [17,18,19,20,21,22,23, 0],7,false)
+  player2.animations.add('death', [15, 14, 16, 15],4,false)
   player2.health = 100
   player2.maxhealth = 100
 
@@ -287,8 +302,9 @@ update: function(){
 
 
   if (cursors.left.isDown){
-    player.scale.x = player.scale.x * -1
+    // player.scale.x = player.scale.x * -1
      player.body.velocity.x = -playerSpeed;
+    player.scale.setTo(-4, 4);
      player.play('walking')
      // bullet.fireAngle = 180
      bullet.fireAngle = Phaser.ANGLE_LEFT
@@ -304,8 +320,9 @@ update: function(){
 
    }
   if (cursors.right.isDown){
-    player.scale.x = player.scale.x * 1
+    // player.scale.x = player.scale.x * 1
      player.body.velocity.x = playerSpeed
+     player.scale.setTo(4, 4)
      player.play('walking')
      // bullet.fireAngle = 0
      // player.scale.x *= 1
@@ -409,6 +426,10 @@ playerHit: function(enemyPlayer, bullet){
   this.player2AnimatedHealthBar()
   console.log(enemyPlayer.health)
 
+  if (enemyPlayer.health < 90){
+     player.animations.add('death', [15, 14, 16, 15],4,true)
+  }
+
   // if (enemyPlayer.health === 0){
   //   enemyPlayer.kill()
   // }
@@ -426,7 +447,39 @@ playerHit2: function(enemyPlayer2, bullet){
 
 player2AnimatedHealthBar: function(){
   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
-}
+},
+
+tick: function() {
+        //subtract a second
+        this.timeInSeconds--;
+        //find how many complete minutes are left
+        var minutes = Math.floor(this.timeInSeconds / 60);
+        //find the number of seconds left
+        //not counting the minutes
+        var seconds = this.timeInSeconds - (minutes * 60);
+        //make a string showing the time
+        var timeString = this.addZeros(minutes) + ":" + this.addZeros(seconds);
+        //display the string in the text field
+        this.timeText.text = timeString;
+        //check if the time is up
+        if (this.timeInSeconds == 0) {
+            //remove the timer from the game
+            this.game.time.events.remove(this.timer);
+            //call your game over or other code here!
+            this.timeText.text="Game Over";
+            this.game.state.restart()
+        }
+    },
+    /**
+     * add leading zeros to any number less than 10
+     * for example turn 1 to 01
+     */
+addZeros: function(num) {
+        if (num < 10) {
+            num = "0" + num;
+        }
+        return num;
+    }
 
 // flipCharacter: function(){
 //   if (player.body.velocity.x < 0) {
