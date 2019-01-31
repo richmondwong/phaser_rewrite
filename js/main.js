@@ -5,6 +5,8 @@ var player2;
 var cursors;
 var currentHealthStatus;
 var platforms;
+  playerSpeed = 400
+
 
 var PlayState = {
 
@@ -12,8 +14,10 @@ init: function(){
   this.input.maxPointers =1;
   this.stage.disableVisibilityChange = true;
 
-  const enable_gravity = 1200;
+  const enable_gravity = 3200;
   this.game.physics.arcade.gravity.y = enable_gravity;
+
+  this.game.physics.arcade.OVERLAP_BIAS = 20
 },
 
 render: function(){
@@ -236,8 +240,6 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   healthText.fixedToCamera = true
 
 
-
-
   cursors = this.input.keyboard.createCursorKeys()
   aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A)
   dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
@@ -273,43 +275,67 @@ update: function(){
   this.physics.arcade.collide(player2,layer)
 
   player.body.velocity.x = 0;
-  player.body.velocity.y = 0;
+  // player.body.velocity.y = 0;
 
   player2.body.velocity.x = 0;
-  player2.body.velocity.y = 0;
+  // player2.body.velocity.y = 0;
 
   player.body.setSize(15,15,7, 7)
   player2.body.setSize(15,15,7, 7)
 
 
+
+
   if (cursors.left.isDown){
-     player.body.velocity.x = -250;
+    player.scale.x = player.scale.x * -1
+     player.body.velocity.x = -playerSpeed;
      player.play('walking')
      // bullet.fireAngle = 180
      bullet.fireAngle = Phaser.ANGLE_LEFT
+     // player.scale.x *= -1
+     // flipCharacter()
      // bullet.fireAngle = 0
+
+    //  if (player.body.velocity.x < 0) {
+    //     player.scale.x *= -1
+    // }
+
+
+
    }
   if (cursors.right.isDown){
-     player.body.velocity.x = 250
+    player.scale.x = player.scale.x * 1
+     player.body.velocity.x = playerSpeed
      player.play('walking')
      // bullet.fireAngle = 0
+     // player.scale.x *= 1
      bullet.fireAngle = Phaser.ANGLE_RIGHT
+
      // bullet.fireAngle = 180
    }
   if (cursors.up.isDown){
-     player.body.velocity.y = -250;
-     player.play('walking')
+     // player.body.velocity.y = -250;
+     // player.body.velocity.y = -600
+
+    player.play('walking')
      // bullet.fireAngle = -90
-     bullet.fireAngle = Phaser.ANGLE_UP
+    // bullet.fireAngle = Phaser.ANGLE_UP
      // bullet.fireAngle = 90
+    const JUMP_SPEED = 1500;
+    let canJump = player.body.touching.down;
+
+    if (canJump) {
+        player.body.velocity.y = -JUMP_SPEED;
+    }
+
+    return canJump;
    }
-   if (cursors.down.isDown){
-     player.body.velocity.y = 250;
-     player.play('walking')
-     // bullet.fireAngle = 90
-     bullet.fireAngle = Phaser.ANGLE_DOWN
-     // bullet.fireAngle = -90
-   }
+   // if (cursors.down.isDown){
+   //   player.body.velocity.y = 250;
+   //   player.play('walking')
+   //   bullet.fireAngle = Phaser.ANGLE_DOWN
+
+   // }
    if (fireButton.isDown){
     bullet.fire()
    }
@@ -321,25 +347,30 @@ update: function(){
 
 
   if (aKey.isDown){
-     player2.body.velocity.x = -250;
+     player2.body.velocity.x = -playerSpeed;
      player2.play('walking2')
      bullet2.fireAngle = Phaser.ANGLE_LEFT
    }
   if (dKey.isDown){
-     player2.body.velocity.x = 250
+     player2.body.velocity.x = playerSpeed
      player2.play('walking2')
      bullet2.fireAngle = Phaser.ANGLE_RIGHT
    }
   if (wKey.isDown){
-     player2.body.velocity.y = -250;
-     player2.play('walking2')
-     bullet2.fireAngle = Phaser.ANGLE_UP
+     const JUMP_SPEED = 1500;
+    let canJump = player2.body.touching.down;
+
+    if (canJump) {
+        player2.body.velocity.y = -JUMP_SPEED;
+    }
+
+    return canJump;
    }
-   if (sKey.isDown){
-     player2.body.velocity.y = 250;
-     player2.play('walking2')
-     bullet2.fireAngle = Phaser.ANGLE_DOWN
-   }
+   // if (sKey.isDown){
+   //   player2.body.velocity.y = 250;
+   //   player2.play('walking2')
+   //   bullet2.fireAngle = Phaser.ANGLE_DOWN
+   // }
    if (fireButton2.isDown){
     bullet2.fire()
    }
@@ -354,7 +385,7 @@ handleCollisions: function(){
 
 handlePlatformCollisions: function(){
   this.game.physics.arcade.collide(player, groupPlatform)
-  this.game.physics.arcade.collide(player2, groupPlatform)
+  // this.game.physics.arcade.collide(player2, groupPlatform)
 },
 
 handlePlatformCollisions2: function(){
@@ -397,14 +428,14 @@ player2AnimatedHealthBar: function(){
   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
 }
 
-// loadLevel: function(data) {
-//   data.platforms.forEach(this.spawnPlatform, this);
-// },
-
-// spawnPlatform: function(platform) {
-//     this.game.add.sprite(platform.x, platform.y, platform.image);
+// flipCharacter: function(){
+//   if (player.body.velocity.x < 0) {
+//         player.scale.x *= -1
+//     }
+//     else if (player.body.velocity.x > 0) {
+//         player.scale.x *= 1
+//     }
 // }
-
 
 
 }
