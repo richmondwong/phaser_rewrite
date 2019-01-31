@@ -4,12 +4,16 @@ var player;
 var player2;
 var cursors;
 var currentHealthStatus;
+var platforms;
 
 var PlayState = {
 
 init: function(){
   this.input.maxPointers =1;
   this.stage.disableVisibilityChange = true;
+
+  const enable_gravity = 1200;
+  this.game.physics.arcade.gravity.y = enable_gravity;
 },
 
 render: function(){
@@ -19,8 +23,8 @@ render: function(){
 },
 
 preload: function(){
-  this.game.load.image('background','assets/BG.png');
-  this.game.load.json('level:1', 'assets/level01.json');
+
+  // this.game.load.json('level:1', 'assets/level00.json');
   this.game.load.image('ground', 'assets/ground.png');
     this.game.load.image('grass:8x1', 'assets/grass_8x1.png');
     this.game.load.image('grass:6x1', 'assets/grass_6x1.png');
@@ -29,26 +33,30 @@ preload: function(){
     this.game.load.image('grass:1x1', 'assets/grass_1x1.png');
 
 
-  //  this.game.load.json('level:1', 'assets/test1210pm.json');
-  // this.game.load.image('one', 'assets/1.png');
-  //   this.game.load.image('two', 'assets/2.png');
-  //   this.game.load.image('three', 'assets/3.png');
-  //   this.game.load.image('four', 'assets/4.png');
-  //   this.game.load.image('five', 'assets/5.png');
-  //   this.game.load.image('six', 'assets/6.png');
-  //   this.game.load.image('seven', 'assets/7.png');
-  //   this.game.load.image('eight', 'assets/8.png');
-  //   this.game.load.image('nine', 'assets/9.png');
-  //   this.game.load.image('ten', 'assets/10.png');
-  //   this.game.load.image('eleven', 'assets/11.png');
-  //   this.game.load.image('twelve', 'assets/12.png');
-  //   this.game.load.image('thirteen', 'assets/13.png');
-  //   this.game.load.image('fourteen', 'assets/14.png');
-  //   this.game.load.image('fifteen', 'assets/15.png');
-  //   this.game.load.image('sixteen', 'assets/16.png');
+ //   this.game.load.json('level:1', 'assets/first_test_340pm.json');
+  this.game.load.image('one', 'assets/1.png');
+    this.game.load.image('two', 'assets/2.png');
+    this.game.load.image('three', 'assets/3.png');
+    this.game.load.image('four', 'assets/4.png');
+    this.game.load.image('five', 'assets/5.png');
+    this.game.load.image('six', 'assets/6.png');
+    this.game.load.image('seven', 'assets/7.png');
+    this.game.load.image('eight', 'assets/8.png');
+    this.game.load.image('nine', 'assets/9.png');
+    this.game.load.image('ten', 'assets/10.png');
+    this.game.load.image('eleven', 'assets/11.png');
+    this.game.load.image('twelve', 'assets/12.png');
+    this.game.load.image('thirteen', 'assets/13.png');
+    this.game.load.image('fourteen', 'assets/14.png');
+    this.game.load.image('fifteen', 'assets/15.png');
+    this.game.load.image('sixteen', 'assets/16.png');
 
 
+    this.game.load.image('tree', 'assets/tree.png');
+    this.game.load.image('skeleton', 'assets/skeleton.png');
+    this.game.load.image('cactus_one', 'assets/cactus_one.png');
 
+ // this.load.tilemap('level:1', 'assets/first_test_340pm.json');
   // this.load.tilemap('map','assets/level1.csv');
   // this.load.image('tileset','assets/tileset.png');
 
@@ -59,11 +67,115 @@ preload: function(){
   this.load.spritesheet('test','assets/dino_green.png', 24, 24)
   this.game.load.image('health_green', 'assets/health_green.png')
   this.game.load.image('health_red', 'assets/health_red.png')
+
+  this.game.load.image('background','assets/BG.png');
+
 },
 
 create: function(){
-  this.game.add.image(0,0, 'background');
-  this.loadLevel(this.game.cache.getJSON('level:1'));
+
+  groupPlatform = this.game.add.group()
+
+   var backgroundImage = this.game.add.image(0,0, 'background');
+   this.game.world.sendToBack(backgroundImage)
+
+
+  // this.game.add.sprite(1152,867, 'fifteen');
+  // this.game.add.sprite(1024,867, 'fifteen');
+  // this.game.add.sprite(896,867, 'fifteen');
+  // this.game.add.sprite(768,867, 'fifteen');
+  // this.game.add.sprite(640,867, 'fifteen');
+  // this.game.add.sprite(512,867, 'fifteen');
+  // this.game.add.sprite(384,867, 'fifteen');
+  // this.game.add.sprite(256,867, 'fifteen');
+  // this.game.add.sprite(128,867, 'fifteen');
+  // this.game.add.sprite(0,867, 'fifteen');
+
+
+  // this.game.add.sprite(1152,650, 'fifteen');
+  // this.game.add.sprite(1024,650, 'fifteen');
+  // this.game.add.sprite(896,650, 'fourteen');
+
+  // this.game.add.sprite(628,450, 'sixteen');
+  // this.game.add.sprite(500,450, 'fifteen');
+  // this.game.add.sprite(372,450, 'fourteen');
+
+  // this.game.add.sprite(900, 390, "tree")
+  // this.game.add.sprite(500, 900, "skeleton")
+  // this.game.add.sprite(100, 755, "cactus_one")
+
+
+
+var platform1 = this.game.add.sprite(1152,867, 'fifteen');
+  var platform2 = this.game.add.sprite(1024,867, 'fifteen');
+  var platform3 = this.game.add.sprite(896,867, 'fifteen');
+  var platform4 = this.game.add.sprite(768,867, 'fifteen');
+  var platform5 = this.game.add.sprite(640,867, 'fifteen');
+  var platform6 = this.game.add.sprite(512,867, 'fifteen');
+  var platform7 = this.game.add.sprite(384,867, 'fifteen');
+  var platform8 = this.game.add.sprite(256,867, 'fifteen');
+  var platform9 = this.game.add.sprite(128,867, 'fifteen');
+  var platform10 = this.game.add.sprite(0,867, 'fifteen');
+
+  var platform11 = this.game.add.sprite(1152,650, 'fifteen');
+  var platform12 = this.game.add.sprite(1024,650, 'fifteen');
+  var platform13 = this.game.add.sprite(896,650, 'fourteen');
+
+  var platform14 = this.game.add.sprite(628,450, 'sixteen');
+  var platform15 = this.game.add.sprite(500,450, 'fifteen');
+  var platform16 = this.game.add.sprite(372,450, 'fourteen');
+
+  this.game.add.sprite(900, 390, "tree")
+  this.game.add.sprite(500, 900, "skeleton")
+  this.game.add.sprite(100, 755, "cactus_one")
+
+//   this.physics.enable(platform1, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform2, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform3, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform4, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform5, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform6, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform7, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform8, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform9, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform10, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform11, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform12, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform13, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform14, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform15, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform16, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform17, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform18, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform19, Phaser.Physics.ARCADE)
+
+
+
+  groupPlatform.add(platform1)
+  groupPlatform.add(platform2)
+  groupPlatform.add(platform3)
+  groupPlatform.add(platform4)
+  groupPlatform.add(platform5)
+  groupPlatform.add(platform6)
+  groupPlatform.add(platform7)
+  groupPlatform.add(platform8)
+  groupPlatform.add(platform9)
+  groupPlatform.add(platform10)
+  groupPlatform.add(platform11)
+  groupPlatform.add(platform12)
+  groupPlatform.add(platform13)
+  groupPlatform.add(platform14)
+  groupPlatform.add(platform15)
+  groupPlatform.add(platform16)
+
+  this.game.physics.enable(groupPlatform)
+  groupPlatform.setAll('body.allowGravity', false)
+  groupPlatform.setAll('body.immovable', true)
+
+
+
+
+  // this.loadLevel(this.game.cache.getJSON('level:1'));
 
   // this.stage.backgroundColor = '#3A5963';
 
@@ -81,7 +193,8 @@ create: function(){
   bullet2 = this.game.add.weapon(10, 'bullet')
 
 
-  player = this.add.sprite(0,0,'player', 9);//position of the player
+
+  player = this.add.sprite(550,830,'player', 9);//position of the player
   player.anchor.setTo(0.5,0.5);
   player.scale.setTo(4,4)
   player.animations.add('walking', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 9, true);
@@ -90,7 +203,7 @@ create: function(){
   player.health = 100
   player.maxhealth = 100
 
-  player2 = this.add.sprite(1280,960,'test', 3);//position of the player
+  player2 = this.add.sprite(300,830,'test', 3);//position of the player
   player2.anchor.setTo(0.5,0.5);
   player2.scale.setTo(4,4)
   player2.animations.add('walking2', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 24, false);
@@ -110,10 +223,10 @@ create: function(){
   player2.body.collideWorldBounds = true;
 
   bullet.trackSprite(player);
-  bullet.bulletSpeed = 500
+  bullet.bulletSpeed = 1000
   // bullet.fireLimit = 10
   bullet2.trackSprite(player2);
-  bullet2.bulletSpeed = 500
+  bullet2.bulletSpeed = 1000
 
   var totalHealthBar = this.game.add.image(300, 20, 'health_red')
   totalHealthBar.fixedToCamera = true
@@ -138,9 +251,17 @@ create: function(){
   meleeButton = this.game.input.keyboard.addKey(Phaser.Keyboard.P)
   meleeButton2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Q)
 
+
 },
 
 update: function(){
+
+  this.handlePlatformCollisions()
+  this.handlePlatformCollisions2()
+  // this.handleCollisions()
+  // this.game.physics.arcade.collide(player, groupPlatform);
+  // groupPlatform.body.immovable = true
+  // groupPlatform.body.allowGravity = false
 
   this.physics.arcade.overlap(player2, bullet.bullets, this.playerHit, null, this)
   this.physics.arcade.overlap(player, bullet2.bullets, this.playerHit2, null, this)
@@ -158,6 +279,7 @@ update: function(){
   player2.body.velocity.y = 0;
 
   player.body.setSize(15,15,7, 7)
+  player2.body.setSize(15,15,7, 7)
 
 
   if (cursors.left.isDown){
@@ -227,8 +349,17 @@ update: function(){
 
 handleCollisions: function(){
   this.game.physics.arcade.collide(player, player2)
+
 },
 
+handlePlatformCollisions: function(){
+  this.game.physics.arcade.collide(player, groupPlatform)
+  this.game.physics.arcade.collide(player2, groupPlatform)
+},
+
+handlePlatformCollisions2: function(){
+  this.game.physics.arcade.collide(player2, groupPlatform)
+},
 
 playerMelee: function(enemyPlayer){
 
@@ -264,15 +395,15 @@ playerHit2: function(enemyPlayer2, bullet){
 
 player2AnimatedHealthBar: function(){
   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
-},
-
-loadLevel: function(data) {
-  data.platforms.forEach(this.spawnPlatform, this);
-},
-
-spawnPlatform: function(platform) {
-    this.game.add.sprite(platform.x, platform.y, platform.image);
 }
+
+// loadLevel: function(data) {
+//   data.platforms.forEach(this.spawnPlatform, this);
+// },
+
+// spawnPlatform: function(platform) {
+//     this.game.add.sprite(platform.x, platform.y, platform.image);
+// }
 
 
 
