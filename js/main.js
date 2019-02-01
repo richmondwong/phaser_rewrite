@@ -6,6 +6,7 @@ var cursors;
 var currentHealthStatus;
 var platforms;
   playerSpeed = 400
+// var music;
 
 
 var PlayState = {
@@ -29,6 +30,9 @@ render: function(){
 preload: function(){
 
   // this.game.load.json('level:1', 'assets/level00.json');
+
+  this.game.load.audio('background_music', 'assets/background_music.ogg')
+
   this.game.load.image('ground', 'assets/ground.png');
     this.game.load.image('grass:8x1', 'assets/grass_8x1.png');
     this.game.load.image('grass:6x1', 'assets/grass_6x1.png');
@@ -79,10 +83,15 @@ preload: function(){
 
 create: function(){
 
+  // music = this.game.add.audio('background_music', 1, true)
+  //  music.play()
+
   //total time until trigger
-        // this.timeInSeconds = 100;
+        // var inputTime = 100
+        // this.timeInSeconds = inputTime + 1;
         //make a text field
-        this.timeText = this.add.text(640, 25, "0:00");
+        this.timeText = this.add.text(640, 25, "BEGIN!");
+        // this.timeText = this.add.text(640, 25, `00:${this.timeInSeconds}`);
         //turn the text white
         this.timeText.fill = "#ffffff";
         //center the text
@@ -144,7 +153,7 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
 
   this.game.add.sprite(900, 390, "tree")
   this.game.add.sprite(500, 900, "skeleton")
-  this.game.add.sprite(100, 755, "cactus_one")
+  cactus = this.game.add.sprite(100, 755, "cactus_one")
 
 //   this.physics.enable(platform1, Phaser.Physics.ARCADE)
 //   this.physics.enable(platform2, Phaser.Physics.ARCADE)
@@ -268,13 +277,29 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   meleeButton = this.game.input.keyboard.addKey(Phaser.Keyboard.P)
   meleeButton2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Q)
 
+  bullet.fireAngle = Phaser.ANGLE_RIGHT
+  bullet2.fireAngle = Phaser.ANGLE_RIGHT
 
 },
 
 update: function(){
 
+
+
+  this.aliveTest()
   this.handlePlatformCollisions()
   this.handlePlatformCollisions2()
+
+//   cactus.key.x -= 30;
+
+// this.game.add.tween(cactus)
+//         .to({x: cactus.x + 60}, 800, Phaser.Easing.Sinusoidal.InOut)
+//         .yoyo(true)
+//         .loop()
+//         .start();
+
+
+
   // this.handleCollisions()
   // this.game.physics.arcade.collide(player, groupPlatform);
   // groupPlatform.body.immovable = true
@@ -424,7 +449,7 @@ playerHit: function(enemyPlayer, bullet){
   // enemyPlayer.kill()
   enemyPlayer.damage(5)
   this.player2AnimatedHealthBar()
-  console.log(enemyPlayer.health)
+  console.log("Enemy Player 2 Heatlth: " , enemyPlayer.health)
 
   if (enemyPlayer.health < 90){
      player.animations.add('death', [15, 14, 16, 15],4,true)
@@ -442,7 +467,7 @@ playerHit2: function(enemyPlayer2, bullet){
   bullet.kill()
   // enemyPlayer.kill()
   enemyPlayer2.damage(5)
-  console.log(enemyPlayer2.health)
+  console.log("Player 1 Health: ", enemyPlayer2.health)
 },
 
 player2AnimatedHealthBar: function(){
@@ -479,7 +504,17 @@ addZeros: function(num) {
             num = "0" + num;
         }
         return num;
-    }
+    },
+
+aliveTest: function(){
+
+  if (player.alive === true && player2.alive === false){
+    this.game.state.restart()
+  }
+  else if (player.alive === false && player2.alive === true){
+    this.game.state.restart()
+  }
+}
 
 // flipCharacter: function(){
 //   if (player.body.velocity.x < 0) {
