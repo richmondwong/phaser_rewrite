@@ -5,17 +5,19 @@ var player2;
 var cursors;
 var currentHealthStatus;
 var platforms;
-var playerSpeed = 400
-var music;
+  playerSpeed = 400
+// var music;
 
 
 var PlayState = {
 
 init: function(){
-  // this.input.maxPointers =1;
+  this.input.maxPointers =1;
   this.stage.disableVisibilityChange = true;
+
   const enable_gravity = 3200;
   this.game.physics.arcade.gravity.y = enable_gravity;
+
   this.game.physics.arcade.OVERLAP_BIAS = 20
 },
 
@@ -27,8 +29,19 @@ render: function(){
 
 preload: function(){
 
+  // this.game.load.json('level:1', 'assets/level00.json');
+
   this.game.load.audio('background_music', 'assets/background_music.ogg')
 
+  this.game.load.image('ground', 'assets/ground.png');
+    this.game.load.image('grass:8x1', 'assets/grass_8x1.png');
+    this.game.load.image('grass:6x1', 'assets/grass_6x1.png');
+    this.game.load.image('grass:4x1', 'assets/grass_4x1.png');
+    this.game.load.image('grass:2x1', 'assets/grass_2x1.png');
+    this.game.load.image('grass:1x1', 'assets/grass_1x1.png');
+
+
+ //   this.game.load.json('level:1', 'assets/first_test_340pm.json');
   this.game.load.image('one', 'assets/1.png');
     this.game.load.image('two', 'assets/2.png');
     this.game.load.image('three', 'assets/3.png');
@@ -46,20 +59,23 @@ preload: function(){
     this.game.load.image('fifteen', 'assets/15.png');
     this.game.load.image('sixteen', 'assets/16.png');
 
+
     this.game.load.image('tree', 'assets/tree.png');
     this.game.load.image('skeleton', 'assets/skeleton.png');
     this.game.load.image('cactus_one', 'assets/cactus_one.png');
 
+ // this.load.tilemap('level:1', 'assets/first_test_340pm.json');
+  // this.load.tilemap('map','assets/level1.csv');
+  // this.load.image('tileset','assets/tileset.png');
 
   this.game.load.image('bullet', 'assets/bullet.png')
   this.game.load.image('bullet2', 'assets/bullet.png')
+  // this.load.spritesheet('player','assets/player.png',24,26)
   this.load.spritesheet('player','assets/dino_red.png',24,24)
   // this.load.spritesheet('player','assets/dino_red_flipped.png',24,24)
   this.load.spritesheet('test','assets/dino_green.png', 24, 24)
   this.game.load.image('health_green', 'assets/health_green.png')
   this.game.load.image('health_red', 'assets/health_red.png')
-
-  this.game.load.image('powerUp', 'assets/barrel.png')
 
   this.game.load.image('background','assets/BG.png');
 
@@ -89,7 +105,34 @@ create: function(){
    var backgroundImage = this.game.add.image(0,0, 'background');
    this.game.world.sendToBack(backgroundImage)
 
-  var platform1 = this.game.add.sprite(1152,867, 'fifteen');
+
+  // this.game.add.sprite(1152,867, 'fifteen');
+  // this.game.add.sprite(1024,867, 'fifteen');
+  // this.game.add.sprite(896,867, 'fifteen');
+  // this.game.add.sprite(768,867, 'fifteen');
+  // this.game.add.sprite(640,867, 'fifteen');
+  // this.game.add.sprite(512,867, 'fifteen');
+  // this.game.add.sprite(384,867, 'fifteen');
+  // this.game.add.sprite(256,867, 'fifteen');
+  // this.game.add.sprite(128,867, 'fifteen');
+  // this.game.add.sprite(0,867, 'fifteen');
+
+
+  // this.game.add.sprite(1152,650, 'fifteen');
+  // this.game.add.sprite(1024,650, 'fifteen');
+  // this.game.add.sprite(896,650, 'fourteen');
+
+  // this.game.add.sprite(628,450, 'sixteen');
+  // this.game.add.sprite(500,450, 'fifteen');
+  // this.game.add.sprite(372,450, 'fourteen');
+
+  // this.game.add.sprite(900, 390, "tree")
+  // this.game.add.sprite(500, 900, "skeleton")
+  // this.game.add.sprite(100, 755, "cactus_one")
+
+
+
+var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   var platform2 = this.game.add.sprite(1024,867, 'fifteen');
   var platform3 = this.game.add.sprite(896,867, 'fifteen');
   var platform4 = this.game.add.sprite(768,867, 'fifteen');
@@ -112,9 +155,27 @@ create: function(){
   this.game.add.sprite(500, 900, "skeleton")
   cactus = this.game.add.sprite(100, 755, "cactus_one")
 
-  powerUp = this.game.add.sprite(850, 810, "powerUp")
-  powerUp.scale.setTo(0.25,0.25)
-  this.game.physics.enable(powerUp)
+//   this.physics.enable(platform1, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform2, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform3, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform4, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform5, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform6, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform7, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform8, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform9, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform10, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform11, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform12, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform13, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform14, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform15, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform16, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform17, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform18, Phaser.Physics.ARCADE)
+//   this.physics.enable(platform19, Phaser.Physics.ARCADE)
+
+
 
   groupPlatform.add(platform1)
   groupPlatform.add(platform2)
@@ -137,17 +198,27 @@ create: function(){
   groupPlatform.setAll('body.allowGravity', false)
   groupPlatform.setAll('body.immovable', true)
 
+
+
+
+  // this.loadLevel(this.game.cache.getJSON('level:1'));
+
+  // this.stage.backgroundColor = '#3A5963';
+
   // map = this.add.tilemap('map',64,64);
   // map.addTilesetImage('tileset');
   // layer = map.createLayer(0);
   // layer.resizeWorld();
+
   // map.setCollisionBetween(0,2);
 
   bullet = this.game.add.weapon(10, 'bullet')
-  bullet2 = this.game.add.weapon(10, 'bullet')
   // bullet.fireLimit = 20
   // var shotsRemain = laser.fireLimit - laser.shots;
   // shotRemainText.text = 'Shots Left ' + shotsRemain;
+  bullet2 = this.game.add.weapon(10, 'bullet')
+
+
 
   player = this.add.sprite(550,830,'player', 9);//position of the player
   player.anchor.setTo(0.5,0.5);
@@ -167,6 +238,7 @@ create: function(){
   player2.animations.add('death', [15, 14, 16, 15],4,false)
   player2.health = 100
   player2.maxhealth = 100
+
 
   this.physics.enable(player, Phaser.Physics.ARCADE)
   this.physics.arcade.enable(player);
@@ -191,12 +263,15 @@ create: function(){
   var healthText = this.game.add.text(210, 20, 'P2 Health', {fontSize: '20px', fill: '#ffffff'})
   healthText.fixedToCamera = true
 
+
   cursors = this.input.keyboard.createCursorKeys()
   aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A)
   dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
   sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S)
   wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W)
 
+
+  // spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
   fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
   fireButton2 = this.input.keyboard.addKey(Phaser.KeyCode.TILDE);
   meleeButton = this.game.input.keyboard.addKey(Phaser.Keyboard.P)
@@ -204,15 +279,16 @@ create: function(){
 
   bullet.fireAngle = Phaser.ANGLE_RIGHT
   bullet2.fireAngle = Phaser.ANGLE_RIGHT
+
 },
 
 update: function(){
 
+
+
   this.aliveTest()
-  this.handleCollisions()
   this.handlePlatformCollisions()
   this.handlePlatformCollisions2()
-  this.handlePowerUpCollisions()
 
 //   cactus.key.x -= 30;
 
@@ -222,17 +298,15 @@ update: function(){
 //         .loop()
 //         .start();
 
+
+
   // this.handleCollisions()
   // this.game.physics.arcade.collide(player, groupPlatform);
   // groupPlatform.body.immovable = true
   // groupPlatform.body.allowGravity = false
 
-  this.physics.arcade.collide(powerUp, groupPlatform)
-  this.physics.arcade.overlap(powerUp, player)
-  this.physics.arcade.overlap(powerUp, player2)
-
-  this.physics.arcade.overlap(player, bullet2.bullets, this.playerHit2, null, this)
   this.physics.arcade.overlap(player2, bullet.bullets, this.playerHit, null, this)
+  this.physics.arcade.overlap(player, bullet2.bullets, this.playerHit2, null, this)
 
   // this.physics.arcade.overlap(player, player2, this.playerMelee, null, this)
   // this.physics.arcade.overlap(player, bullet2.bullets, this.playerHit2, null, this)
@@ -249,27 +323,56 @@ update: function(){
   player.body.setSize(15,15,7, 7)
   player2.body.setSize(15,15,7, 7)
 
+
   if (cursors.left.isDown){
+    // player.scale.x = player.scale.x * -1
      player.body.velocity.x = -playerSpeed;
-     player.scale.setTo(-4, 4);
+    player.scale.setTo(-4, 4);
      player.play('walking')
+     // bullet.fireAngle = 180
      bullet.fireAngle = Phaser.ANGLE_LEFT
+     // player.scale.x *= -1
+     // flipCharacter()
+     // bullet.fireAngle = 0
+
+    //  if (player.body.velocity.x < 0) {
+    //     player.scale.x *= -1
+    // }
    }
   if (cursors.right.isDown){
+    // player.scale.x = player.scale.x * 1
      player.body.velocity.x = playerSpeed
      player.scale.setTo(4, 4)
      player.play('walking')
+     // bullet.fireAngle = 0
+     // player.scale.x *= 1
      bullet.fireAngle = Phaser.ANGLE_RIGHT
+
+     // bullet.fireAngle = 180
    }
   if (cursors.up.isDown){
+     // player.body.velocity.y = -250;
+     // player.body.velocity.y = -600
+
     player.play('walking')
+     // bullet.fireAngle = -90
+    // bullet.fireAngle = Phaser.ANGLE_UP
+     // bullet.fireAngle = 90
     const JUMP_SPEED = 1500;
     let canJump = player.body.touching.down;
+
     if (canJump) {
         player.body.velocity.y = -JUMP_SPEED;
     }
+
     return canJump;
    }
+   // if (cursors.down.isDown){
+   //   player.body.velocity.y = 250;
+   //   player.play('walking')
+   //   bullet.fireAngle = Phaser.ANGLE_DOWN
+
+   // }
    if (fireButton.isDown){
     bullet.fire()
    }
@@ -278,29 +381,38 @@ update: function(){
     this.playerMelee(player2)
    }
 
+
+
   if (aKey.isDown){
      player2.body.velocity.x = -playerSpeed;
-     player2.scale.setTo(-4, 4);
      player2.play('walking2')
      bullet2.fireAngle = Phaser.ANGLE_LEFT
    }
   if (dKey.isDown){
      player2.body.velocity.x = playerSpeed
-    player2.scale.setTo(4, 4)
      player2.play('walking2')
      bullet2.fireAngle = Phaser.ANGLE_RIGHT
    }
   if (wKey.isDown){
      const JUMP_SPEED = 1500;
     let canJump = player2.body.touching.down;
+
     if (canJump) {
         player2.body.velocity.y = -JUMP_SPEED;
     }
+
     return canJump;
    }
-    if (fireButton2.isDown){
+   // if (sKey.isDown){
+   //   player2.body.velocity.y = 250;
+   //   player2.play('walking2')
+   //   bullet2.fireAngle = Phaser.ANGLE_DOWN
+   // }
+   if (fireButton2.isDown){
     bullet2.fire()
    }
+
+  this.handleCollisions()
 },
 
 handleCollisions: function(){
@@ -390,35 +502,25 @@ addZeros: function(num) {
     },
 
 aliveTest: function(){
+
   if (player.alive === true && player2.alive === false){
     this.game.state.restart()
   }
   else if (player.alive === false && player2.alive === true){
     this.game.state.restart()
   }
-},
-
-handlePowerUpCollisions: function(){
-  if (this.physics.arcade.overlap(player, powerUp)){
-
-    (player.health + 25) >100 ?  player.health=100: player.health += 25
-
-   powerUp.destroy()
-
-
-  this.player2AnimatedHealthBar()
-  console.log(player.health)
-  }
-  if (this.physics.arcade.overlap(player2, powerUp)){
-     (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
-
-   powerUp.destroy()
-
-  // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
-  this.player2AnimatedHealthBar()
-  console.log(player2.health)
-  }
 }
+
+// flipCharacter: function(){
+//   if (player.body.velocity.x < 0) {
+//         player.scale.x *= -1
+//     }
+//     else if (player.body.velocity.x > 0) {
+//         player.scale.x *= 1
+//     }
+// }
+
+
 }
 
 
