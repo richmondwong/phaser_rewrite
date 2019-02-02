@@ -51,8 +51,8 @@ preload: function(){
     this.game.load.image('cactus_one', 'assets/cactus_one.png');
 
 
-  this.game.load.image('bullet', 'assets/bullet.png')
-  this.game.load.image('bullet2', 'assets/bullet.png')
+  this.game.load.image('bullet', 'assets/fireball.png')
+  this.game.load.image('bullet2', 'assets/fireball.png')
   this.load.spritesheet('player','assets/dino_red.png',24,24)
   // this.load.spritesheet('player','assets/dino_red_flipped.png',24,24)
   this.load.spritesheet('test','assets/dino_green.png', 24, 24)
@@ -112,7 +112,8 @@ create: function(){
   this.game.add.sprite(500, 900, "skeleton")
   cactus = this.game.add.sprite(100, 755, "cactus_one")
 
-  powerUp = this.game.add.sprite(850, 810, "powerUp")
+  powerUp = this.game.add.sprite(850, 410, "powerUp")
+  // powerUp = this.game.add.sprite(850, 810, "powerUp")
   powerUp.scale.setTo(0.25,0.25)
   this.game.physics.enable(powerUp)
 
@@ -179,10 +180,20 @@ create: function(){
   player2.body.collideWorldBounds = true;
 
   bullet.trackSprite(player);
-  bullet.bulletSpeed = 1000
+  bullet.bulletSpeed = 500
   // bullet.fireLimit = 10
   bullet2.trackSprite(player2);
-  bullet2.bulletSpeed = 1000
+  bullet2.bulletSpeed = 500
+
+  bullet.fireAngle = Phaser.ANGLE_RIGHT
+  bullet2.fireAngle = Phaser.ANGLE_RIGHT
+
+  bullet.bulletGravity.y = -3200;
+  bullet2.bulletGravity.y = -3200;
+  bullet.bulletKillType = Phaser.Weapon.KILL_DISTANCE
+  bullet2.bulletKillType = Phaser.Weapon.KILL_DISTANCE
+  bullet.bulletKillDistance = 200
+  bullet2.bulletKillDistance = 200
 
   var totalHealthBar = this.game.add.image(300, 20, 'health_red')
   totalHealthBar.fixedToCamera = true
@@ -201,9 +212,6 @@ create: function(){
   fireButton2 = this.input.keyboard.addKey(Phaser.KeyCode.TILDE);
   meleeButton = this.game.input.keyboard.addKey(Phaser.Keyboard.P)
   meleeButton2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Q)
-
-  bullet.fireAngle = Phaser.ANGLE_RIGHT
-  bullet2.fireAngle = Phaser.ANGLE_RIGHT
 },
 
 update: function(){
