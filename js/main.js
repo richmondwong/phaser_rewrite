@@ -7,7 +7,38 @@ var currentHealthStatus;
 var platforms;
 var playerSpeed = 400
 var music;
+var doDamage1 = 5
+var doDamage2 = 5
+var score1 = 0
+var score2 = 0
+var finalScore = 0
 
+
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      // families: ['Revalia']
+      families: ['Press Start 2P']
+    }
+
+};
+
+var Gameover = {
+  init: function(){},
+  render: function(){},
+  preload: function(){},
+  create: function(){},
+  update: function(){}
+
+
+
+}
 
 var PlayState = {
 
@@ -26,6 +57,8 @@ render: function(){
 },
 
 preload: function(){
+
+  this.game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
   this.game.load.audio('background_music', 'assets/background_music.ogg')
 
@@ -49,6 +82,13 @@ preload: function(){
     this.game.load.image('tree', 'assets/tree.png');
     this.game.load.image('skeleton', 'assets/skeleton.png');
     this.game.load.image('cactus_one', 'assets/cactus_one.png');
+    this.game.load.image('cactus_two', 'assets/cactus_two.png');
+    this.game.load.image('cactus_three', 'assets/cactus_three.png');
+    this.game.load.image('stone', 'assets/stone.png');
+    this.game.load.image('signArrow', 'assets/sign_arrow.png');
+
+    this.game.load.image('guns', 'assets/edit_gun.png');
+
 
 
   this.game.load.image('bullet', 'assets/fireball.png')
@@ -60,6 +100,11 @@ preload: function(){
   this.game.load.image('health_red', 'assets/health_red.png')
 
   this.game.load.image('powerUp', 'assets/barrel.png')
+  this.game.load.image('powerUp2', 'assets/barrel.png')
+
+  this.game.load.image('explosion', 'assets/explosion.png')
+
+
 
   this.game.load.image('background','assets/BG.png');
 
@@ -71,8 +116,8 @@ create: function(){
   //  music.play()
 
   //total time until trigger
-        // var inputTime = 100
-        // this.timeInSeconds = inputTime + 1;
+        inputTime = 30
+        timeInSeconds = inputTime + 1;
         //make a text field
         this.timeText = this.add.text(640, 25, "BEGIN!");
         // this.timeText = this.add.text(640, 25, `00:${this.timeInSeconds}`);
@@ -85,6 +130,7 @@ create: function(){
 
 
   groupPlatform = this.game.add.group()
+  groupPowerUp = this.game.add.group()
 
    var backgroundImage = this.game.add.image(0,0, 'background');
    this.game.world.sendToBack(backgroundImage)
@@ -100,22 +146,52 @@ create: function(){
   var platform9 = this.game.add.sprite(128,867, 'fifteen');
   var platform10 = this.game.add.sprite(0,867, 'fifteen');
 
-  var platform11 = this.game.add.sprite(1152,650, 'fifteen');
-  var platform12 = this.game.add.sprite(1024,650, 'fifteen');
-  var platform13 = this.game.add.sprite(896,650, 'fourteen');
+  var platformTwo1 = this.game.add.sprite(1152,650, 'fifteen');
+  var platformTwo2 = this.game.add.sprite(1024,650, 'fourteen');
 
-  var platform14 = this.game.add.sprite(628,450, 'sixteen');
-  var platform15 = this.game.add.sprite(500,450, 'fifteen');
-  var platform16 = this.game.add.sprite(372,450, 'fourteen');
+  var platformThree1 = this.game.add.sprite(756,420, 'sixteen');
+  var platformThree2 = this.game.add.sprite(628,420, 'fifteen');
+  var platformThree3 = this.game.add.sprite(500,420, 'fourteen');
+  // var platform16 = this.game.add.sprite(372,450, 'fourteen');
 
-  this.game.add.sprite(900, 390, "tree")
-  this.game.add.sprite(500, 900, "skeleton")
-  cactus = this.game.add.sprite(100, 755, "cactus_one")
+  var platformFour1 = this.game.add.sprite(478,150, 'sixteen');
+  var platformFour2 = this.game.add.sprite(350,150, 'fourteen');
 
-  powerUp = this.game.add.sprite(850, 410, "powerUp")
-  // powerUp = this.game.add.sprite(850, 810, "powerUp")
-  powerUp.scale.setTo(0.25,0.25)
-  this.game.physics.enable(powerUp)
+  var platformFive1 = this.game.add.sprite(338,575, 'sixteen');
+  var platformFive2 = this.game.add.sprite(210,575, 'fourteen');
+
+  this.game.add.sprite(1050, 390, "tree")
+  var skeleton1 = this.game.add.sprite(500, 900, "skeleton")
+  // var skeleton2 = this.game.add.sprite(300, 105, "skeleton")
+  this.game.add.sprite(600, 755, "cactus_one")
+  // this.game.add.sprite(278, 400, "cactus_two")
+  this.game.add.sprite(250, 480, "cactus_three")
+  this.game.add.sprite(300, 780, "signArrow")
+
+  guns = this.game.add.sprite(330, 90, "guns")
+  guns.scale.setTo(0.18, 0.18)
+  this.game.physics.enable(guns)
+
+
+  stone = this.game.add.sprite(210, 815, "stone")
+  stone.scale.setTo(0.75,0.75)
+
+  powerUp = this.game.add.sprite("powerUp")
+  powerUp2 = this.game.add.sprite("powerUp2")
+
+
+  // powerUp = this.game.add.sprite(this.game.rnd.integerInRange(50, 1230), 10, "powerUp")
+  // powerUp.scale.setTo(0.25,0.25)
+  // this.game.physics.enable(powerUp)
+
+  this.game.time.events.add(Phaser.Timer.SECOND * 5, this.powerUpDrop, this)
+  this.game.time.events.add(Phaser.Timer.SECOND * 7, this.powerUpDrop2, this)
+  // this.game.time.events.repeat(Phaser.Timer.SECOND * 3, 5, this.powerUpDrop, this)
+  // this.game.physics.enable(powerUp)
+
+  // powerUp.scale.setTo(0.25,0.25)
+  // this.game.physics.enable(powerUp)
+
 
   groupPlatform.add(platform1)
   groupPlatform.add(platform2)
@@ -127,12 +203,20 @@ create: function(){
   groupPlatform.add(platform8)
   groupPlatform.add(platform9)
   groupPlatform.add(platform10)
-  groupPlatform.add(platform11)
-  groupPlatform.add(platform12)
-  groupPlatform.add(platform13)
-  groupPlatform.add(platform14)
-  groupPlatform.add(platform15)
-  groupPlatform.add(platform16)
+
+  groupPlatform.add(platformTwo1)
+  groupPlatform.add(platformTwo2)
+
+  groupPlatform.add(platformThree1)
+  groupPlatform.add(platformThree2)
+  groupPlatform.add(platformThree3)
+
+  groupPlatform.add(platformFour1)
+  groupPlatform.add(platformFour2)
+
+  groupPlatform.add(platformFive1)
+  groupPlatform.add(platformFive2)
+
 
   this.game.physics.enable(groupPlatform)
   groupPlatform.setAll('body.allowGravity', false)
@@ -181,9 +265,11 @@ create: function(){
 
   bullet.trackSprite(player);
   bullet.bulletSpeed = 500
+  // this.physics.enable(bullet, Phaser.Physics.ARCADE)
   // bullet.fireLimit = 10
   bullet2.trackSprite(player2);
   bullet2.bulletSpeed = 500
+  // this.physics.enable(bullet2, Phaser.Physics.ARCADE)
 
   bullet.fireAngle = Phaser.ANGLE_RIGHT
   bullet2.fireAngle = Phaser.ANGLE_RIGHT
@@ -216,19 +302,30 @@ create: function(){
 
 update: function(){
 
+
+ this.physics.arcade.collide(powerUp, groupPlatform)
+ this.physics.arcade.overlap(powerUp, player)
+ this.physics.arcade.overlap(powerUp, player2)
+ this.game.physics.enable(powerUp)
+
+ this.physics.arcade.collide(powerUp2, groupPlatform)
+ this.physics.arcade.overlap(powerUp2, player)
+ this.physics.arcade.overlap(powerUp2, player2)
+ this.game.physics.enable(powerUp2)
+
+  this.physics.arcade.collide(guns, groupPlatform)
+  this.physics.arcade.overlap(guns, player)
+  this.physics.arcade.overlap(guns, player2)
+
   this.aliveTest()
   this.handleCollisions()
   this.handlePlatformCollisions()
-  this.handlePlatformCollisions2()
+  // this.handlePlatformCollisions2()
   this.handlePowerUpCollisions()
+  this.handlePowerUpCollisions2()
+  this.handleGunsCollisions()
 
-//   cactus.key.x -= 30;
 
-// this.game.add.tween(cactus)
-//         .to({x: cactus.x + 60}, 800, Phaser.Easing.Sinusoidal.InOut)
-//         .yoyo(true)
-//         .loop()
-//         .start();
 
   // this.handleCollisions()
   // this.game.physics.arcade.collide(player, groupPlatform);
@@ -311,6 +408,7 @@ update: function(){
    }
 },
 
+
 handleCollisions: function(){
   this.game.physics.arcade.collide(player, player2)
 
@@ -318,12 +416,15 @@ handleCollisions: function(){
 
 handlePlatformCollisions: function(){
   this.game.physics.arcade.collide(player, groupPlatform)
+  this.game.physics.arcade.collide(player2, groupPlatform)
+  // this.game.physics.arcade.collide(bullet, groupPlatform)
+  // this.game.physics.arcade.collide(bullet2, groupPlatform)
   // this.game.physics.arcade.collide(player2, groupPlatform)
 },
 
-handlePlatformCollisions2: function(){
-  this.game.physics.arcade.collide(player2, groupPlatform)
-},
+// handlePlatformCollisions2: function(){
+//   this.game.physics.arcade.collide(player2, groupPlatform)
+// },
 
 playerMelee: function(enemyPlayer){
 
@@ -338,7 +439,8 @@ playerMelee: function(enemyPlayer){
 playerHit: function(enemyPlayer, bullet){
   bullet.kill()
   // enemyPlayer.kill()
-  enemyPlayer.damage(5)
+  enemyPlayer.damage(doDamage1)
+  this.handleFireballScore1()
   this.player2AnimatedHealthBar()
   console.log("Enemy Player 2 Heatlth: " , enemyPlayer.health)
 
@@ -357,7 +459,7 @@ playerHit: function(enemyPlayer, bullet){
 playerHit2: function(enemyPlayer2, bullet){
   bullet.kill()
   // enemyPlayer.kill()
-  enemyPlayer2.damage(5)
+  enemyPlayer2.damage(doDamage2)
   console.log("Player 1 Health: ", enemyPlayer2.health)
 },
 
@@ -367,23 +469,23 @@ player2AnimatedHealthBar: function(){
 
 tick: function() {
         //subtract a second
-        this.timeInSeconds--;
+        timeInSeconds--;
         //find how many complete minutes are left
-        var minutes = Math.floor(this.timeInSeconds / 60);
+        var minutes = Math.floor(timeInSeconds / 60);
         //find the number of seconds left
         //not counting the minutes
-        var seconds = this.timeInSeconds - (minutes * 60);
+        var seconds = timeInSeconds - (minutes * 60);
         //make a string showing the time
         var timeString = this.addZeros(minutes) + ":" + this.addZeros(seconds);
         //display the string in the text field
         this.timeText.text = timeString;
         //check if the time is up
-        if (this.timeInSeconds == 0) {
+        if (timeInSeconds == 0) {
             //remove the timer from the game
             this.game.time.events.remove(this.timer);
             //call your game over or other code here!
             this.timeText.text="Game Over";
-            this.game.state.restart()
+            // this.game.state.restart()
         }
     },
     /**
@@ -399,10 +501,30 @@ addZeros: function(num) {
 
 aliveTest: function(){
   if (player.alive === true && player2.alive === false){
-    this.game.state.restart()
+
+  actualTime = parseInt(this.game.time.totalElapsedSeconds()) - 2
+  // console.log("Real Time: ", parseInt(this.game.time.totalElapsedSeconds()))
+  // console.log("Minus Time: ", parseInt(this.game.time.totalElapsedSeconds()) -2 )
+  finalScore = score1 + (inputTime - actualTime)
+  console.log("THIS IS SCORE 1: ", finalScore)
+
+  // this.game.destroy()
+    // this.game.time.events.add(Phaser.Timer.SECOND * 3, function(){this.game.state.restart()} ,this)
+
+  playerScore = this.game.add.text(280,220, `Your score is ${finalScore}`)
+  playerScore.font = 'Press Start 2P'
+  playerScore.fontSize = 50
+  playerScore.addColor("  #0000FF", 0);
+  playerScore.kill()
+
+  // this.game.time.events.add(Phaser.Timer.SECOND * 0.5, function(){playerScore.kill()} ,this)
+
+  // this.state.start('play', true, false);
+
+
   }
   else if (player.alive === false && player2.alive === true){
-    this.game.state.restart()
+    this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){this.game.state.restart()} ,this)
   }
 },
 
@@ -413,6 +535,12 @@ handlePowerUpCollisions: function(){
 
    powerUp.destroy()
 
+   powerUpText = this.game.add.text(280,220, "Health Up!")
+    powerUpText.font = 'Press Start 2P'
+    powerUpText.fontSize = 50
+    powerUpText.addColor("  #0000FF", 0);
+    this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){powerUpText.kill()} ,this)
+
 
   this.player2AnimatedHealthBar()
   console.log(player.health)
@@ -420,14 +548,130 @@ handlePowerUpCollisions: function(){
   if (this.physics.arcade.overlap(player2, powerUp)){
      (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
 
-   powerUp.destroy()
+    powerUp.destroy()
+    powerUpText = this.game.add.text(280,220, "Health Up!")
+    powerUpText.font = 'Press Start 2P'
+    powerUpText.fontSize = 50
+    powerUpText.addColor("#0000FF", 0);
+    this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){powerUpText.kill()} ,this)
 
   // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
   this.player2AnimatedHealthBar()
   console.log(player2.health)
   }
+},
+
+handlePowerUpCollisions2: function(){
+  if (this.physics.arcade.overlap(player, powerUp2)){
+
+    (player.health + 25) >100 ?  player.health=100: player.health += 25
+
+   powerUp2.destroy()
+     powerUp.destroy()
+    powerUpText = this.game.add.text(280,220, "Health Up!")
+    powerUpText.font = 'Press Start 2P'
+    powerUpText.fontSize = 50
+    powerUpText.addColor("#0000FF", 0);
+    this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){powerUpText.kill()} ,this)
+
+
+  this.player2AnimatedHealthBar()
+  console.log(player.health)
+  }
+  if (this.physics.arcade.overlap(player2, powerUp2)){
+     (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
+
+   powerUp2.destroy()
+     powerUp.destroy()
+    powerUpText = this.game.add.text(280,220, "Health Up!")
+    powerUpText.font = 'Press Start 2P'
+    powerUpText.fontSize = 50
+    powerUpText.addColor("#0000FF", 0);
+    this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){powerUpText.kill()} ,this)
+
+  // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+  this.player2AnimatedHealthBar()
+  console.log(player2.health)
+  }
+},
+
+powerUpDrop: function(){
+ powerUp = this.game.add.sprite(this.game.rnd.integerInRange(800, 1230), 10, "powerUp")
+  // powerUp = this.game.add.sprite(850, 810, "powerUp")
+ powerUp.scale.setTo(0.25,0.25)
+
+ this.physics.arcade.collide(powerUp, groupPlatform)
+ this.physics.arcade.overlap(powerUp, player)
+ this.physics.arcade.overlap(powerUp, player2)
+ this.game.physics.enable(powerUp)
+},
+
+powerUpDrop2: function(){
+ powerUp2 = this.game.add.sprite(this.game.rnd.integerInRange(50, 800), 10, "powerUp2")
+  // powerUp = this.game.add.sprite(850, 810, "powerUp")
+ powerUp2.scale.setTo(0.25,0.25)
+
+ this.physics.arcade.collide(powerUp2, groupPlatform)
+ this.physics.arcade.overlap(powerUp2, player)
+ this.physics.arcade.overlap(powerUp2, player2)
+ this.game.physics.enable(powerUp2)
+},
+
+
+handleGunsCollisions: function(){
+  if (this.physics.arcade.overlap(player, guns)){
+    doDamage1 = 15
+    guns.destroy()
+
+    this.printGun()
+    // explosion = this.game.add.text(275,260, "Triple Damage!")
+    // explosion.font = 'Press Start 2P'
+    // explosion.fontSize = 50
+    // explosion.addColor("#ff0000", 0);
+    // this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){explosion.kill()} ,this)
+
+    this.player2AnimatedHealthBar()
+    console.log(player.health)
+  }
+  if (this.physics.arcade.overlap(player2, guns)){
+   doDamage2 = 15
+   guns.destroy()
+
+   this.printGun()
+   // explosion = this.game.add.text(275,260, "Triple Damage!")
+   // explosion.font = 'Press Start 2P'
+   // explosion.fontSize = 50
+   // explosion.addColor("#ff0000", 0);
+   // this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){explosion.kill()} ,this)
+
+  // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+  this.player2AnimatedHealthBar()
+  console.log(player2.health)
+  }
+},
+
+handleFireballScore1: function(){
+  score1 += doDamage1
+  console.log("This is Player 1's score: " , score1)
+},
+
+printGun: function(){
+    explosion = this.game.add.text(275,260, "Triple Damage!")
+    explosion.font = 'Press Start 2P'
+    explosion.fontSize = 50
+    explosion.addColor("#ff0000", 0);
+    this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){explosion.kill()} ,this)
+},
+
+endTime: function(){
+  if ( player2.health == 0){
+this.game.state.start('Gameover')
+
 }
-}
+},
+
+
+
 
 
 
@@ -437,6 +681,7 @@ window.onload = function() {
     let game = new Phaser.Game(1280, 960, Phaser.AUTO, 'game');
     // ppppp
     game.state.add('play', PlayState);
+    game.state.add('Gameover',Gameover,false )
     // game.state.start('play', true, false, {level: 0});
     game.state.start('play');
 };
