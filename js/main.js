@@ -15,7 +15,6 @@ var finalScore = 0
 
 
 WebFontConfig = {
-
     //  'active' means all requested fonts have finished loading
     //  We set a 1 second delay before calling 'createText'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
@@ -26,7 +25,6 @@ WebFontConfig = {
       // families: ['Revalia']
       families: ['Press Start 2P']
     }
-
 };
 
 var Gameover = {
@@ -35,9 +33,6 @@ var Gameover = {
   preload: function(){},
   create: function(){},
   update: function(){}
-
-
-
 }
 
 var PlayState = {
@@ -59,6 +54,8 @@ render: function(){
 preload: function(){
 
   this.game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+
+  this.game.load.image('restartButton', 'assets/barrel.png');
 
   this.game.load.audio('background_music', 'assets/background_music.ogg')
 
@@ -115,7 +112,9 @@ create: function(){
   // music = this.game.add.audio('background_music', 1, true)
   //  music.play()
 
-  //total time until trigger
+
+
+  // total time until trigger
         inputTime = 30
         timeInSeconds = inputTime + 1;
         //make a text field
@@ -506,6 +505,13 @@ aliveTest: function(){
   // console.log("Real Time: ", parseInt(this.game.time.totalElapsedSeconds()))
   // console.log("Minus Time: ", parseInt(this.game.time.totalElapsedSeconds()) -2 )
   finalScore = score1 + (inputTime - actualTime)
+
+
+  restartButton = this.game.add.sprite(500, 100, 'restartButton');
+  // restartButton.scale.setTo (0.05, 0.05);
+  restartButton.inputEnabled = true;
+  restartButton.visible = true;
+  restartButton.events.onInputDown.add(this.theListener, this)
   console.log("THIS IS SCORE 1: ", finalScore)
 
   // this.game.destroy()
@@ -663,13 +669,16 @@ printGun: function(){
     this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){explosion.kill()} ,this)
 },
 
-endTime: function(){
-  if ( player2.health == 0){
-this.game.state.start('Gameover')
+// endTime: function(){
+//   if ( player2.health == 0){
+// this.game.state.start('Gameover')
+// }
+// },
 
+theListener: function() {
+      this.game.state.restart();
+    }
 }
-},
-
 
 
 
@@ -681,7 +690,9 @@ window.onload = function() {
     let game = new Phaser.Game(1280, 960, Phaser.AUTO, 'game');
     // ppppp
     game.state.add('play', PlayState);
-    game.state.add('Gameover',Gameover,false )
+
+    // game.state.add('Gameover',Gameover,false )
+
     // game.state.start('play', true, false, {level: 0});
     game.state.start('play');
 };
